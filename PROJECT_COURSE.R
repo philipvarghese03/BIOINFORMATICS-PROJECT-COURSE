@@ -2,7 +2,7 @@
 
 ######AUTHOR - PHILIP VARGHESE###########
 
-###THE CODING WAS DONE WITH THE HELP OF CHATGPT AND ASSIGNMENT MANUALS FROM THE BIOINFORMATICS SEMINARS###
+###THE CODING WAS DONE WITH THE ASSISTANCE OF CHATGPT AND ASSIGNMENT MANUALS FROM THE BIOINFORMATICS SEMINARS###
 
 ###Setting directory for the data###
 setwd('/Users/philipvarghese182/Desktop/FILES FORPROJECT')
@@ -40,20 +40,18 @@ rownames(combined_table) = combined_table$ENTREZID
 length(unique(combined_table$SYMBOL))
 aggregated_table <- aggregate(. ~ SYMBOL, data = combined_table, FUN = sum)
 
-###Check if using aggregate worked###
+###Checking if aggregate worked###
 length(unique(aggregated_table$SYMBOL))
 is.na(combined_table)
 combined_table <- na.omit(combined_table)
 is.na(combined_table) 
 
-###check so NAs were removed correctly###
+###checking so NAs are removed correctly###
 head(combined_table)
 
 ###Making mean columns###
 combined_table$Mock_Mean <- rowMeans(combined_table[,3:5])
 combined_table$Treated_Mean <- rowMeans(combined_table[,6:8])
-
-###checking the mean columns###
 head(combined_table)
 
 ###plotting data as a scatterplot with with ggplot2###
@@ -76,9 +74,9 @@ print(metadata)
 
 ###Preparing the data for more analysis###
 ###Use normalized counts directly###
-normalized_counts <- counts  # Assume counts are pre-normalized
+normalized_counts <- counts  #The counts are pre-normalized when downloaded from Galaxy#
 
-###Inspect normalized data to ensure values are as expected###
+###Inspecting normalized data to ensure values are as expected###
 summary(normalized_counts)
 
 ###Filter out low-expression genes based on normalized data###
@@ -87,27 +85,27 @@ max_expression <- apply(normalized_counts, 1, max)
 min_expression <- apply(normalized_counts, 1, min)
 
 ###Filtering for meaningful fold change and expression thresholds###
-###Adjust these based on the normalization method (e.g., TPM or CPM range)###
+###Adjusting these based on the normalization method###
 filtered_counts <- normalized_counts[(max_expression >= 2) & ((max_expression - min_expression) >= 1), ]
 
-###Calculate variance and select top 500 genes###
+###Calculating the variance and selecting the top 500 genes###
 gene_variance <- apply(filtered_counts, 1, var)
 keep_by_variance <- order(gene_variance, decreasing = TRUE)[1:500]
 topvar_counts <- filtered_counts[keep_by_variance, ]
 
-###Convert topvar_counts to a matrix###
+###Converting topvar_counts to a matrix###
 topvar_counts <- as.matrix(topvar_counts)
 
-###Replace infinite values with 0###
+###Replacing infinite values with 0###
 topvar_counts[is.infinite(topvar_counts)] <- 0
 
-###Replace any NA values with 0 (if applicable)###
+###Replacing NA values with 0 (if present)###
 topvar_counts[is.na(topvar_counts)] <- 0
 
-###Remove rows with all zeros###
+###Removing rows with all zeros###
 topvar_counts <- topvar_counts[rowSums(topvar_counts) > 0, ]
 
-###Ensure no NAs or infinite values in the final dataset###
+###Ensuring no NAs or infinite values are in the final dataset###
 topvar_counts[is.na(topvar_counts)] <- 0
 topvar_counts[is.infinite(topvar_counts)] <- 0
 topvar_counts <- topvar_counts[rowSums(topvar_counts) > 0, ]
@@ -115,19 +113,16 @@ topvar_counts <- topvar_counts[rowSums(topvar_counts) > 0, ]
 
 ##########SVD OF THE DATA#########
 
-#SVD explores the variance structure in the top 500 variable genes and visualize the first two SVD components and the variance explained by the top 10 components#
-
-
-svd_result <- svd(scale(t(topvar_counts))) 
+###SVD explores the variance structure in the top 500 variable genes and visualize the first two SVD components###
 
 ###Calculating variance by each component###
 variance_explained <- svd_result$d^2 / sum(svd_result$d^2)
 variance_explained <- round(variance_explained * 100, 2)
 
 ###Prepare data for the first two SVD components###
-svd_samples <- as.data.frame(svd_result$u[, 1:2]) #Extract the components#
+svd_samples <- as.data.frame(svd_result$u[, 1:2]) 
 colnames(svd_samples) <- c("SVD1", "SVD2")
-svd_samples$Group <- metadata$Group  #Add group labels#
+svd_samples$Group <- metadata$Group  
 
 ###Plotting SVD results for the first two components###
 ggplot(svd_samples, aes(x = SVD1, y = SVD2, color = sample.types)) +
@@ -143,8 +138,7 @@ ggplot(svd_samples, aes(x = SVD1, y = SVD2, color = sample.types)) +
 #Plotting variance by the first 10 components#
 variance_df <- data.frame(
   Component = paste0("SVD", 1:10),
-  Variance_Explained = variance_explained[1:10]
-)
+  Variance_Explained = variance_explained[1:10])
 
 ggplot(variance_df, aes(x = Component, y = Variance_Explained)) +
   geom_bar(stat = "identity", fill = "pink") +
@@ -159,13 +153,13 @@ ggplot(variance_df, aes(x = Component, y = Variance_Explained)) +
 
 #########PCA ANALYSIS#######
 
-###Apply PCA on the transposed data###
+###Applying PCA on the transposed data###
 output_pca <- prcomp(t(topvar_counts))
-###Calculate the variance of each PC###
+###Calculating the variance of each PC###
 var_explained = output_pca$sdev^2 / sum(output_pca$sdev^2)
 var_explained <- round(var_explained, digits = 2)
 
-###Show the first 5 PCs###
+###Showing the first 5 PCs###
 var_explained_df <- data.frame(PC = paste0("PC", 1:5),
                                var_explained = var_explained[1:5])
 
@@ -177,12 +171,12 @@ ggplot(var_explained_df, aes(x = PC, y = var_explained)) +
 
 
 ###PCA Plot###
-###Extract PCs 1 and 2###
+###Extracting PCs 1 and 2###
 output_pca_df <- as.data.frame(output_pca$x[, 1:2])  
 colnames(output_pca_df) <- c("PC1", "PC2")          
 output_pca_df$sample.types <- metadata$sample.Types   
 
-###Plot samples by their PC1 and PC2###
+###Plotting samples by their PC1 and PC2###
 ggplot(output_pca_df, aes(x = PC1, y = PC2, color = sample.types)) +
   geom_point(size = 3, alpha = 0.7) +
   theme_bw() +
@@ -240,7 +234,7 @@ ggplot(output_tsne, aes(x = tSNE1, y = tSNE2, color = sample.types)) +  #Clear l
 ###Ensures reproducibility of t-SNE and UMAP results###
 set.seed(42)
 
-###Apply UMAP###
+###Applying UMAP###
 output_umap <- umap(t(topvar_counts), 
                     method = "naive", 
                     preserve.seed = TRUE, 
@@ -254,10 +248,10 @@ output_umap <- as.data.frame(output_umap$layout)
 ###Renaming the columns###
 colnames(output_umap) <- c("UMAP1", "UMAP2")
 
-###Add metadata variables###
+###Adding metadata variables###
 output_umap$sample.type <- metadata$sample.type
 
-###Plot the UMAP result###
+###Plotting the UMAP result###
 ggplot(output_umap, aes(x = UMAP1, y = UMAP2, color = sample.types)) +  
   ggtitle("UMAP Plot") +
   geom_point(size = 5, alpha = 0.9) +
@@ -276,47 +270,44 @@ ggplot(output_umap, aes(x = UMAP1, y = UMAP2, color = sample.types)) +
 
 ####VOLCANO PLOT####
 
-#Calculate Log Fold Change (LogFC) and P-values for genes#
+#Calculating Log Fold Change (LogFC) and P-values for genes#
 #T-tests to compare expression between Mock and Treated groups for each gene#
 pvalues <- apply(topvar_counts, 1, function(row) {
   t.test(row[1:3], row[4:6], alternative = "two.sided")$p.value})
 
 ###Adjusting p-values to control for false positives###
-#Use the Benjamini-Hochberg method to adjust the p-values#
+#Using the Benjamini-Hochberg method to adjust the p-values#
 adjusted_pvalues <- p.adjust(pvalues, method = "BH")
 
 #Log Fold Change is the difference in average expression between Treated and Mock groups#
 log_fold_change <- rowMeans(topvar_counts[, 4:6]) - rowMeans(topvar_counts[, 1:3])
 
-#Prepare data for visualization in a volcano plot#
-#Create a table with gene names, LogFC, and adjusted p-values#
+#Preparing data for visualization in a volcano plot#
+#Creating a table with gene names, LogFC, and adjusted p-values#
 volcano_df <- data.frame(
   Gene = rownames(topvar_counts),
   LogFC = log_fold_change,
   PValue = adjusted_pvalues,
   Log10PValue = -log10(adjusted_pvalues))
 
-#Set thresholds to identify significant genes and define cutoffs for LogFC and adjusted p-value to categorize genes#
-threshold_logfc <- 1  #Lowered threshold for Log Fold Change due to limited sample size#
-threshold_pvalue <- 0.05  #Lowered threshold for adjusted p-value to account for reduced sample#
+#Setting thresholds to identify significant genes and define cutoffs for LogFC and adjusted p-value to categorize genes#
+threshold_logfc <- 1  
+threshold_pvalue <- 0.05  
 
-#Default thresholds yielded insufficient significant genes for meaningful analysis#
-
-#Categorize genes based on thresholds#
+#Categorizing genes based on thresholds#
 volcano_df$Category <- ifelse(
   volcano_df$Log10PValue > -log10(threshold_pvalue) & volcano_df$LogFC > threshold_logfc, "Upregulated",
-  ifelse(volcano_df$Log10PValue > -log10(threshold_pvalue) & volcano_df$LogFC < -threshold_logfc, "Downregulated", "Not Significant")
-)
+  ifelse(volcano_df$Log10PValue > -log10(threshold_pvalue) & volcano_df$LogFC < -threshold_logfc, "Downregulated", "Not Significant"))
 
-#Verify the number of genes in each category to ensure thresholds are effective#
+#Verifying the number of genes in each category to ensure thresholds are effective#
 table(volcano_df$Category)
 
-#Identify significant genes for annotation in the volcano plot#
+#Identifying significant genes for annotation in the volcano plot#
 significant_genes <- subset(volcano_df, Category != "Not Significant")
 
 
-####Ploting a Volcano Plot#####
-#Visualize gene expression changes and highlight the most significant genes#
+####Plotting a Volcano Plot#####
+#Visualizing gene expression changes and highlighting the most significant genes#
 top_genes <- significant_genes[order(-significant_genes$Log10PValue), ][1:10, ]  
 
 ggplot(volcano_df, aes(x = LogFC, y = Log10PValue, color = Category)) +
@@ -341,17 +332,17 @@ ggplot(volcano_df, aes(x = LogFC, y = Log10PValue, color = Category)) +
 ###Selecting the top 10 upregulated and downregulated genes###
 top_n <- 10  
 
-#Sort genes by LogFC and select upregulated and downregulated genes#
+#Sorting genes by LogFC and select upregulated and downregulated genes#
 upregulated_genes <- head(volcano_df[order(-volcano_df$LogFC), "Gene"], top_n)
 downregulated_genes <- head(volcano_df[order(volcano_df$LogFC), "Gene"], top_n)
 
-#Combine upregulated and downregulated genes#
+#Combining upregulated and downregulated genes#
 selected_genes <- c(upregulated_genes, downregulated_genes)
 
-#Subset expression data for selected genes#
+#Subseting expression data for selected genes#
 selected_gene_data <- topvar_counts[rownames(topvar_counts) %in% selected_genes, ]
 
-#Ensure selected_gene_data matches the order of selected_genes#
+#Ensuring selected_gene_data matches the order of selected_genes#
 selected_gene_data <- selected_gene_data[match(selected_genes, rownames(selected_gene_data)), ]
 
 #Using gene names (if available in the data) for x-axis#
@@ -359,25 +350,25 @@ gene_names <- combined_table$SYMBOL[match(rownames(selected_gene_data), combined
 
 gene_names <- ifelse(is.na(gene_names), rownames(selected_gene_data), gene_names)  
 
-#Add gene names as row names to the selected data#
+#Adding gene names as row names to the selected data#
 rownames(selected_gene_data) <- gene_names
 
-#Melt the data into long format#
+#Melting the data into long format#
 gene_count_long <- melt(selected_gene_data)
 colnames(gene_count_long) <- c("Gene", "Sample", "Expression")
 
-#Add condition information based on metadata#
+#Adding condition information based on metadata#
 gene_count_long$Condition <- metadata$Group[match(gene_count_long$Sample, metadata$Sample_ID)]
 
-#Add regulation category (Upregulated/Downregulated)#
+#Adding regulation category (Upregulated/Downregulated)#
 gene_count_long$Regulation <- ifelse(
   gene_count_long$Gene %in% upregulated_genes, "Upregulated", "Downregulated"
 )
 
-#Convert Gene to a factor to ensure proper ordering on the x-axis#
+#Converting Gene to a factor to ensure proper ordering on the x-axis#
 gene_count_long$Gene <- factor(gene_count_long$Gene, levels = unique(gene_names))
 
-#Create a violin plot for all significant genes#
+#Creating a violin plot for all significant genes#
 ggplot(gene_count_long, aes(x = Gene, y = Expression, fill = Regulation)) + 
   geom_violin(trim = FALSE, scale = "width", alpha = 0.6) +  #Scale widths equally#
   scale_fill_manual(values = c("Upregulated" = "maroon", "Downregulated" = "gold")) +  
@@ -396,13 +387,13 @@ ggplot(gene_count_long, aes(x = Gene, y = Expression, fill = Regulation)) +
 
 
 #### HEATMAP ####
-# Prepare data for heatmap
+# Preparing data for heatmap
 heatmap_data <- selected_gene_data  
 
-# Verify column names of heatmap_data
+# Verifying column names of heatmap_data
 sample_ids <- colnames(heatmap_data)
 
-# Match column names in heatmap_data with metadata's sample IDs (assuming Sample_Names column contains IDs)
+# Matching column names in heatmap_data with metadata's sample IDs (assuming Sample_Names column contains IDs)
 annotation_col <- data.frame(
   Condition = metadata$Sample_Types[match(sample_ids, metadata$Sample_Name)])
 
@@ -433,13 +424,13 @@ pheatmap(
 merged_table_two <- merge_table_two[,c(2,3,4,5,6,7)] 
 head(merged_table_two)
 
-#Convert data into a long format using pivot_longer#
+#Converting data into a long format using pivot_longer#
 merged_table_final <- merged_table_two %>% 
   pivot_longer(cols = everything(),  #Include all columns#
                names_to = "All_samples",  #Column for sample names#
                values_to = "Values")  #Column for expression values#
 
-#Create a boxplot for the long-format data#
+#Creating a boxplot for the long-format data#
 ggplot(merged_table_final, aes(x = All_samples, y = Values)) +
   geom_boxplot(fill = "forestgreen") +
   theme_classic() +
@@ -467,7 +458,7 @@ gene_entrez <- bitr(
   toType   = "ENTREZID",   #Output type#
   OrgDb    = org.Hs.eg.db)
 
-###Debugging Step: To Check if conversion is successful### 
+###Debugging Step To Check if conversion is successful### 
 if (nrow(gene_entrez) > 0) {
   print(paste("Number of valid ENTREZ IDs:", nrow(gene_entrez)))
   
