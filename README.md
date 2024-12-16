@@ -6,17 +6,33 @@ R STUDIO CODE FOR BIOINFORMATICS PROJECT
 This project performs a differential gene expression analysis to identify significant changes in treated and control samples. RNA sequencing data is analyzed to answer specific biological questions using bioinformatics tools. The project uses Galaxy for pre-processing and R for downstream analysis, applying statistical methods to identify and visualize differentially expressed genes.
 
 ###Pre-processing steps###
+
 1.The SRR accesion number from NCBI (sample identifiers) are pasted onto GALAXY.EU with its appropiate CONTROL/TREATED TAG.
+
 2.Reads are extracted in FASTQ format
+
 3.The data im working with in this project is single end data
+
 4.The data is then subjectd to FASTQ Quality control for both treated and control
+
 5.Another tool MULTIQC is also used
+
 6.The samples will be trimmed using fastp/cutadapt tool in galaxy
+
 7.HISAT2/STAR tools are used as splice aware aligners to map data to genome
+
 8.MultiQC is ran again for the data as a quality control
+
 9.The data is then subjected to quantification
+
 10.A tool called featureCounts is used to measure gene expression in RNA-Seq (Gene annotation)
-11.
+
+11.edgeR is used to perform diffrential expression of count data. And the data is filtered with a minimum CPM of '1' and minimum samples of '3'
+
+12.A tool called annotatemyID is also executed for ease of handling data in R
+
+
+
 
 ## Features
 1. **Preprocessing and Normalization**:
