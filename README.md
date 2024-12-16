@@ -1,11 +1,14 @@
-#####BIOINFORMATICS-PROJECT-COURSE#####
-R STUDIO CODE FOR BIOINFORMATICS PROJECT 
-#Differential Gene Expression Analysis and Visualization#
+**BIOINFORMATICS-PROJECT-COURSE**
 
-###Project Overview###
+R STUDIO CODE FOR BIOINFORMATICS PROJECT 
+
+**Differential Gene Expression Analysis and Visualization**
+
+**Project Overview**
 This project performs a differential gene expression analysis to identify significant changes in treated and control samples. RNA sequencing data is analyzed to answer specific biological questions using bioinformatics tools. The project uses Galaxy for pre-processing and R for downstream analysis, applying statistical methods to identify and visualize differentially expressed genes.
 
-###Pre-processing steps###
+
+**Pre-processing steps**
 
 1.The SRR accesion number from NCBI (sample identifiers) are pasted onto GALAXY.EU with its appropiate CONTROL/TREATED TAG.
 
@@ -33,22 +36,16 @@ This project performs a differential gene expression analysis to identify signif
 
 
 
-
-## Features
-1. **Preprocessing and Normalization**:
-   - Utilized normalized RNA-seq data from Galaxy.
-   - Filtered low-expressed genes and retained the top 500 most variable genes.
-
-2. **Visualization Techniques**:
+ **Visualization Techniques**:
+   - **Scatter Plot**: To compare mean expression levels between conditions.
+   - **PCA, t-SNE, and UMAP**: For dimensionality reduction and clustering analysis of treated and control samples.
    - **Box Plot**: To assess normalization and overall distribution of expression levels.
    - **Volcano Plot**: To visualize differentially expressed genes (Log Fold Change > 1, adjusted p-value < 0.05).
    - **Violin Plot**: To show the distribution of expression levels for significant genes.
    - **Heatmap**: To cluster significant genes and samples based on expression profiles.
-   - **PCA, t-SNE, and UMAP**: For dimensionality reduction and clustering analysis of treated vs. control samples.
-   - **Scatter Plot**: To compare mean expression levels between conditions.
-
-3. **Functional Analysis**:
-   - **KEGG Pathway Enrichment**: Identified enriched biological pathways such as cancer-related pathways and cellular senescence.
+     
+ **Analysis**:
+   - **KEGG Pathway analysis**: Identified enriched biological pathways such as cancer-related pathways and cellular senescence.
 
  
 ###Prerequisites###
@@ -73,5 +70,7 @@ This project performs a differential gene expression analysis to identify signif
          library(ggrepel)
          library(AnnotationDbi)
          library(umap)
+  - Annotated Data from Galaxy
+    
 
 
