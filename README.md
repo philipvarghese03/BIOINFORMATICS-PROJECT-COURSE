@@ -13,6 +13,9 @@ This project performs a differential gene expression analysis to identify signif
 
 
 
+**DISCLAIMER**
+**WHEN EXECUTING THE CODE PLEASE MAKE A FOLDER CALLED FILES FORPROJECT TO SET DIRECTORY**
+
 
 **Pre-processing steps**
 
@@ -81,6 +84,10 @@ This project performs a differential gene expression analysis to identify signif
          library(AnnotationDbi)
          library(umap)
   - Annotated Data from Galaxy
+
+
+
+ 
 
 
 
