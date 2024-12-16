@@ -2,7 +2,6 @@
 
 ######AUTHOR - PHILIP VARGHESE###########
 
-#############DISCLAIMER##########
 ###THE CODING WAS DONE WITH THE HELP OF CHATGPT AND ASSIGNMENT MANUALS FROM THE BIOINFORMATICS SEMINARS###
 
 ###Setting directory for the data###
