@@ -2,10 +2,16 @@
 
 R STUDIO CODE FOR BIOINFORMATICS PROJECT 
 
+
+
 **Differential Gene Expression Analysis and Visualization**
+
+
 
 **Project Overview**
 This project performs a differential gene expression analysis to identify significant changes in treated and control samples. RNA sequencing data is analyzed to answer specific biological questions using bioinformatics tools. The project uses Galaxy for pre-processing and R for downstream analysis, applying statistical methods to identify and visualize differentially expressed genes.
+
+
 
 
 **Pre-processing steps**
@@ -36,6 +42,7 @@ This project performs a differential gene expression analysis to identify signif
 
 
 
+
  **Visualization Techniques**:
    - **Scatter Plot**: To compare mean expression levels between conditions.
    - **PCA, t-SNE, and UMAP**: For dimensionality reduction and clustering analysis of treated and control samples.
@@ -43,12 +50,15 @@ This project performs a differential gene expression analysis to identify signif
    - **Volcano Plot**: To visualize differentially expressed genes (Log Fold Change > 1, adjusted p-value < 0.05).
    - **Violin Plot**: To show the distribution of expression levels for significant genes.
    - **Heatmap**: To cluster significant genes and samples based on expression profiles.
+
+
      
  **Analysis**:
    - **KEGG Pathway analysis**: Identified enriched biological pathways such as cancer-related pathways and cellular senescence.
 
+
  
-###Prerequisites###
+**Prerequisites**
 - R software
 - RStudio software
 - Required R packages:
@@ -71,6 +81,10 @@ This project performs a differential gene expression analysis to identify signif
          library(AnnotationDbi)
          library(umap)
   - Annotated Data from Galaxy
+
+
+
+
     
 
 
